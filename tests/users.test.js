@@ -1,10 +1,14 @@
 const request = require("supertest");
-
 const app = require("../src/app");
+const crypto = require("node:crypto");
+
+const database = require("../database");
+afterAll(() => {
+  database.end();
+});
 
 describe("POST /api/users", () => {
   it("should return created user", async () => {
-   
     const newUser = {
       firstname: "Marie",
       lastname: "Martin",

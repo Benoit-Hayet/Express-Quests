@@ -1,10 +1,14 @@
 const request = require("supertest");
-
 const app = require("../src/app");
+
+const database = require("../database");
+afterAll(() => {
+  database.end();
+});
 
 describe("POST /api/movies", () => {
   it("should return created movie", async () => {
-   const newMovie = {
+    const newMovie = {
       title: "Star Wars",
       director: "George Lucas",
       year: "1977",
@@ -31,7 +35,7 @@ describe("POST /api/movies", () => {
     expect(movieInDatabase).toHaveProperty("title");
     expect(movieInDatabase.title).toStrictEqual(newMovie.title);
     expect(movieInDatabase).toHaveProperty("director");
-    expect(movieInDatabase.director).toStrictEqual(newMovie.director)
+    expect(movieInDatabase.director).toStrictEqual(newMovie.director);
     expect(movieInDatabase).toHaveProperty("year");
     expect(movieInDatabase.year).toStrictEqual(newMovie.year);
     expect(movieInDatabase).toHaveProperty("color");
@@ -69,7 +73,6 @@ describe("GET /api/movies/:id", () => {
 
     expect(response.status).toEqual(200);
   });
-
   it("should return no movie", async () => {
     const response = await request(app).get("/api/movies/0");
 

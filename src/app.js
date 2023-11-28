@@ -7,9 +7,11 @@ const userControllers = require("./controllers/userControllers");
 
 app.get("/api/movies", movieControllers.getMovies);
 app.post("/api/movies", movieControllers.postMovie);
+app.put("/api/movies/:id", movieControllers.updateMovie);
 app.get("/api/movies/:id", movieControllers.getMovieById);
 app.get("/api/users", userControllers.getUsers);
 app.post("/api/users", userControllers.postUsers);
+app.put("/api/movies/:id", userControllers.updateUsers);
 app.get("/api/users/:id", userControllers.getUsersById);
 
 module.exports = app;
