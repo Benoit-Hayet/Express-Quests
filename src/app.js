@@ -11,7 +11,7 @@ app.put("/api/movies/:id", movieControllers.updateMovie);
 app.get("/api/movies/:id", movieControllers.getMovieById);
 app.get("/api/users", userControllers.getUsers);
 app.post("/api/users", userControllers.postUsers);
-app.put("/api/movies/:id", userControllers.updateUsers);
+app.put("/api/users/:id", userControllers.updateUsers);
 app.get("/api/users/:id", userControllers.getUsersById);
 
 module.exports = app;

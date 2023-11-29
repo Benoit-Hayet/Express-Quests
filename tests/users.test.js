@@ -7,6 +7,92 @@ afterAll(() => {
   database.end();
 });
 
+describe("PUT /api/users/:id", () => {
+  it("should edit user", async () => {
+    const newUser = {
+      firstname: "Ben",
+      lastname: "Ito",
+      email: `${crypto.randomUUID()}@mail.com`,
+      city: "Bordeaux",
+      language: "French",
+    };
+
+    const [result] = await database.query(
+      "INSERT INTO users(firstname, lastname, email, city, language) VALUES (?, ?, ?, ?, ?)",
+      [
+        newUser.firstname,
+        newUser.lastname,
+        newUser.email,
+        newUser.city,
+        newUser.language,
+      ]
+    );
+
+    const id = result.insertId;
+
+    const updatedUser = {
+      firstname: "Kristian",
+      lastname: "Larmon",
+      email: `${crypto.randomUUID()}@mail.com`,
+      city: "Bordeaux",
+      language: "French",
+    };
+
+    const response = await request(app)
+      .put(`/api/users/${id}`)
+      .send(updatedUser);
+
+    expect(response.status).toEqual(200);
+
+    const [results] = await database.query(
+      "SELECT * FROM users WHERE id=?",
+      id
+    );
+
+    const [UserInDatabase] = results;
+
+    expect(UserInDatabase).toHaveProperty("id");
+
+    expect(UserInDatabase).toHaveProperty("firstname");
+    expect(UserInDatabase.firstname).toStrictEqual(updatedUser.firstname);
+
+    expect(UserInDatabase).toHaveProperty("lastname");
+    expect(UserInDatabase.lastname).toStrictEqual(updatedUser.lastname);
+
+    expect(UserInDatabase).toHaveProperty("email");
+    expect(UserInDatabase.email).toStrictEqual(updatedUser.email);
+
+    expect(UserInDatabase).toHaveProperty("city");
+    expect(UserInDatabase.city).toStrictEqual(updatedUser.city);
+
+    expect(UserInDatabase).toHaveProperty("language");
+    expect(UserInDatabase.language).toStrictEqual(updatedUser.language);
+  });
+
+  it("should return an error", async () => {
+    const userWithMissingProps = { firsname: "Harry" };
+
+    const response = await request(app)
+      .put(`/api/users/1`)
+      .send(userWithMissingProps);
+
+    expect(response.status).toEqual(422);
+  });
+
+  it("should return no user", async () => {
+    const newUser = {
+      firstname: "Ben",
+      lastname: "Ito",
+      email: "ben.ito@gmail.com",
+      city: "Bordeaux",
+      language: "French",
+    };
+
+    const response = await request(app).put("/api/users/0").send(newUser);
+
+    expect(response.status).toEqual(404);
+  });
+});
 describe("POST /api/users", () => {
   it("should return created user", async () => {
     const newUser = {

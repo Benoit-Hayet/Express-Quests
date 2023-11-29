@@ -6,19 +6,18 @@ const updateUsers = (req, res) => {
 
   database
     .query(
-      `update users set firstname = ?, lastname = ?, email = ?, city = ?, language = ? where id = [id]`,
+      `update users set firstname = ?, lastname = ?, email = ?, city = ?, language = ? where id =?`,
       [firstname, lastname, email, city, language, id]
     )
     .then(([result]) => {
       if (result.affectedRows === 0) {
         res.sendStatus(404);
       } else {
-        res.sendStatus(204);
+        res.sendStatus(200);
       }
     })
     .catch((err) => {
-      console.error(err);
-      res.sendStatus(500);
+      res.status(422).send({message:err.message})
     });
 };
 
@@ -34,8 +33,7 @@ const postUsers = (req, res) => {
       res.status(201).send({ id: result.insertId });
     })
     .catch((err) => {
-      console.error(err);
-      res.sendStatus(500);
+      res.status(422).send({message:err.message})
     });
 };
 
