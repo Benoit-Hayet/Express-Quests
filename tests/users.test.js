@@ -138,7 +138,7 @@ describe("POST /api/users", () => {
       .post("/api/users")
       .send(userWithMissingProps);
 
-    expect(response.status).toEqual(500);
+    expect(response.status).toEqual(422);
   });
 });
 
@@ -157,7 +157,6 @@ describe("GET /api/users/:id", () => {
     const response = await request(app).get("/api/users/1");
 
     expect(response.headers["content-type"]).toMatch(/json/);
-
     expect(response.status).toEqual(200);
   });
 
